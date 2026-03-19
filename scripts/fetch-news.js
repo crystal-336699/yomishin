@@ -10,7 +10,6 @@ async function callClaude(messages) {
     const body = JSON.stringify({
       model: 'claude-sonnet-4-20250514',
       max_tokens: 8000,
-      tools: [{ type: 'web_search_20250305', name: 'web_search' }],
       messages,
     });
     const req = https.request({
@@ -25,7 +24,10 @@ async function callClaude(messages) {
     }, (res) => {
       let data = '';
       res.on('data', chunk => data += chunk);
-      res.on('end', () => { try { resolve(JSON.parse(data)); } catch(e) { reject(e); } });
+      res.on('end', () => {
+        try { resolve(JSON.parse(data)); }
+        catch(e) { reject(e); }
+      });
     });
     req.on('error', reject);
     req.write(body);
@@ -44,45 +46,54 @@ async function main() {
   const date = today();
   console.log('뉴스 업데이트 시작:', date);
 
-  const prompt = `今日(${date})の日本のニュースを https://news.web.nhk/newsweb/pl/news-nwa-latest-nationwide と https://news.livedoor.com/topics/rss/top.xml から20件以上収集し、以下のJSON配列のみ返してください。他テキスト不要。
+  const prompt = `今日(${date})の日本の主要ニュースを20件、以下のJSON配列形式のみで返してください。他のテキストは一切不要です。
 
-[{"id":1,"src":"nhk","cat":"politics","date":"${date}","title":"タイトル","url":"URL","body":"本文3〜5段落（空行区切り）"}]
+[
+  {
+    "id": 1,
+    "src": "nhk",
+    "cat": "politics",
+    "date": "${date}",
+    "title": "記事タイトル",
+    "url": "https://...",
+    "body": "本文段落1\\n\\n本文段落2\\n\\n本文段落3"
+  }
+]
 
-catは politics/economy/society/international/sports/science のいずれか。bodyは実際の記事内容、200字以上。`;
+ルール:
+- srcは nhk/livedoor/jiji/kyodo のいずれか
+- catは politics/economy/society/international/sports/science のいずれか  
+- bodyは実際のニュース内容を3段落以上、各200字以上
+- 今日の実際のニュースを使用すること
+- JSON配列のみ返すこと（\`\`\`や説明文不要）`;
 
-  let messages = [{ role: 'user', content: prompt }];
-  let finalText = '';
-  let rounds = 0;
+  const data = await callClaude([{ role: 'user', content: prompt }]);
 
-  while (rounds < 6) {
-    rounds++;
-    const data = await callClaude(messages);
-    messages.push({ role: 'assistant', content: data.content });
+  console.log('API 응답 stop_reason:', data.stop_reason);
 
-    if (data.stop_reason === 'end_turn') {
-      const tb = data.content.find(b => b.type === 'text');
-      if (tb) { finalText = tb.text; break; }
-    } else if (data.stop_reason === 'tool_use') {
-      const toolUses = data.content.filter(b => b.type === 'tool_use');
-      const toolResults = toolUses.map(tu => ({
-        type: 'tool_result',
-        tool_use_id: tu.id,
-        content: '検索結果を元にJSON配列を作成してください。'
-      }));
-      messages.push({ role: 'user', content: toolResults });
-    } else {
-      const tb = data.content.find(b => b.type === 'text');
-      if (tb) { finalText = tb.text; break; }
-      break;
-    }
+  if (!data.content || !data.content.length) {
+    console.error('API 응답 오류:', JSON.stringify(data));
+    process.exit(1);
   }
 
-  const s = finalText.indexOf('[');
-  const e = finalText.lastIndexOf(']');
-  if (s === -1) { console.error('JSON not found'); process.exit(1); }
+  const tb = data.content.find(b => b.type === 'text');
+  if (!tb) {
+    console.error('텍스트 응답 없음:', JSON.stringify(data.content));
+    process.exit(1);
+  }
 
-  const articles = JSON.parse(finalText.slice(s, e + 1))
-    .filter(a => a.title && a.body && a.body.length > 50)
+  const raw = tb.text.trim();
+  console.log('응답 첫 100자:', raw.slice(0, 100));
+
+  const s = raw.indexOf('[');
+  const e = raw.lastIndexOf(']');
+  if (s === -1) {
+    console.error('JSON 배열 없음. 전체 응답:', raw.slice(0, 500));
+    process.exit(1);
+  }
+
+  const articles = JSON.parse(raw.slice(s, e + 1))
+    .filter(a => a.title && a.body && a.body.length > 30)
     .map((a, i) => ({ ...a, id: i + 1 }));
 
   console.log(`${articles.length}개 기사 수집 완료`);
@@ -95,7 +106,7 @@ catは politics/economy/society/international/sports/science のいずれか。b
     articles
   }, null, 2), 'utf8');
 
-  console.log('docs/articles.json 저장 완료');
+  console.log('저장 완료:', out);
 }
 
-main().catch(e => { console.error(e); process.exit(1); });
+main().catch(e => { console.error('오류:', e); process.exit(1); });
