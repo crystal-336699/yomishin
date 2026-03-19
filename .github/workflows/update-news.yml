@@ -6,23 +6,25 @@ on:
   workflow_dispatch:
 
 jobs:
-  update-news:
+  update-ijs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - name: Fetch news
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: node scripts/fetch-news.js
-      - name: Commit
+
+      - name: IJS 사설 스크래핑
+        run: node scripts/fetch-ijs.js
+
+      - name: 변경사항 커밋
         run: |
           git config user.name "yomishin-bot"
           git config user.email "bot@yomishin"
-          git add docs/articles.json
-          git diff --cached --quiet || git commit -m "뉴스 업데이트 $(date +'%Y-%m-%d')"
+          git add docs/ijs-data.json
+          git diff --cached --quiet || git commit -m "📰 IJS 사설 업데이트 $(date +'%Y-%m-%d')"
           git push
