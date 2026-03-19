@@ -3,81 +3,60 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>読新 — 일본 뉴스 리더</title>
+<title>読新</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+KR:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--ink:#1a1410;--ink2:#3d3530;--red:#c0392b;--gold:#b8860b;--bd:#e8e2d8;--warm:#f7f3ee}
+:root{--ink:#1a1410;--ink2:#3d3530;--red:#c0392b;--bd:#e8e2d8;--warm:#f7f3ee}
 body{font-family:'Noto Serif JP',serif;background:#fff;color:var(--ink);max-width:800px;margin:0 auto}
-
 .hdr{background:#fff;border-bottom:1px solid var(--bd);padding:11px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 1px 5px rgba(0,0,0,.06)}
-.logo{font-size:20px;font-weight:700;letter-spacing:.04em;color:var(--ink);display:flex;align-items:baseline;gap:7px}
-.logo-sub{font-size:9px;font-family:'Noto Sans KR',sans-serif;font-weight:400;color:#bbb;letter-spacing:.15em}
+.logo{font-size:20px;font-weight:700;display:flex;align-items:baseline;gap:7px}
+.logo-sub{font-size:9px;font-family:'Noto Sans KR',sans-serif;color:#bbb;letter-spacing:.15em}
 .hdr-r{display:flex;gap:7px;align-items:center}
-.btn{font-family:'Noto Sans KR',sans-serif;font-size:10px;padding:4px 11px;border-radius:16px;border:1px solid #ddd;background:#fff;color:#888;cursor:pointer;white-space:nowrap;transition:all .15s}
-.btn:hover{background:var(--warm)}
+.btn{font-family:'Noto Sans KR',sans-serif;font-size:10px;padding:4px 11px;border-radius:16px;border:1px solid #ddd;background:#fff;color:#888;cursor:pointer}
 .btn.on{background:var(--red);border-color:var(--red);color:#fff}
-.btn.refresh{border-color:var(--red);color:var(--red)}
-.btn.refresh:hover{background:var(--red);color:#fff}
-.btn.refresh.spinning .ri{display:inline-block;animation:rot .6s linear infinite}
+.btn.ref{border-color:var(--red);color:var(--red)}
+.btn.back{display:none}.btn.back.show{display:block}
 @keyframes rot{to{transform:rotate(360deg)}}
-.btn.back{display:none}
-.btn.back.show{display:block}
-
-.cat-row{background:#fff;border-bottom:1px solid var(--bd);display:flex;overflow-x:auto;scrollbar-width:none;position:sticky;top:54px;z-index:99}
-.cat-row::-webkit-scrollbar{display:none}
-.cat-tab{padding:8px 13px;font-size:10px;font-family:'Noto Sans KR',sans-serif;font-weight:500;color:#aaa;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;flex-shrink:0;transition:all .15s}
-.cat-tab.on{color:var(--red);border-bottom-color:var(--red);font-weight:600}
-
-/* ── 목록 ── */
-#listView{display:block}
-#articleView{display:none}
-
-.list-info{padding:7px 16px;font-size:10px;font-family:'Noto Sans KR',sans-serif;color:#aaa;background:var(--warm);border-bottom:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center;position:sticky;top:93px;z-index:97}
+.spin{animation:rot .6s linear infinite;display:inline-block}
+.src-row{background:#fff;border-bottom:1px solid var(--bd);display:flex;overflow-x:auto;scrollbar-width:none}
+.src-row::-webkit-scrollbar{display:none}
+.src-tab{padding:8px 13px;font-size:11px;font-family:'Noto Sans KR',sans-serif;font-weight:500;color:#aaa;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;flex-shrink:0}
+.src-tab.on{color:var(--red);border-bottom-color:var(--red);font-weight:600}
+#listView{display:block}#articleView{display:none}
+.list-info{padding:7px 16px;font-size:10px;font-family:'Noto Sans KR',sans-serif;color:#aaa;background:var(--warm);border-bottom:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center;position:sticky;top:87px;z-index:97}
 .cnt{background:#e8e2d8;border-radius:8px;padding:1px 7px;font-weight:600;color:#888}
-.updated-tag{font-size:9px;color:#ccc}
-
 .news-row{padding:15px 16px;border-bottom:1px solid var(--bd);cursor:pointer;transition:background .1s}
 .news-row:hover,.news-row:active{background:var(--warm)}
-.row-top{display:flex;align-items:center;gap:7px;margin-bottom:6px;flex-wrap:wrap}
-.row-cat{font-size:8px;font-family:'Noto Sans KR',sans-serif;font-weight:700;padding:2px 7px;border-radius:3px}
+.row-top{display:flex;align-items:center;gap:7px;margin-bottom:5px}
 .row-src{font-size:9px;font-family:'Noto Sans KR',sans-serif;font-weight:600}
 .row-date{font-size:9px;font-family:'Noto Sans KR',sans-serif;color:#bbb;margin-left:auto}
 .row-title{font-size:14.5px;font-weight:700;line-height:1.65}
-
-/* ── 기사 뷰 ── */
+.row-desc{font-size:11px;font-family:'Noto Sans KR',sans-serif;color:#aaa;line-height:1.6;margin-top:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .art-wrap{padding:24px 20px 52px}
-.art-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:16px}
-.art-catb{font-size:9px;font-family:'Noto Sans KR',sans-serif;font-weight:700;padding:3px 9px;border-radius:3px}
+.art-meta{display:flex;align-items:center;gap:8px;margin-bottom:16px}
 .art-srcb{font-size:9px;font-family:'Noto Sans KR',sans-serif;font-weight:700;color:#fff;padding:3px 9px;border-radius:2px}
 .art-date{font-size:11px;font-family:'Noto Sans KR',sans-serif;color:#aaa}
 .art-title{font-size:22px;font-weight:700;line-height:1.55;margin-bottom:20px;padding-bottom:16px;border-bottom:2px solid var(--ink)}
 .art-body{font-size:14px;line-height:2.35;color:var(--ink2)}
 .art-body p{margin-bottom:16px}
-.src-link{display:inline-flex;align-items:center;gap:7px;margin:18px 0 5px;background:var(--warm);color:var(--ink);font-family:'Noto Sans KR',sans-serif;font-size:12px;font-weight:500;padding:9px 16px;border-radius:6px;text-decoration:none;border:1px solid var(--bd);transition:background .15s}
-.src-link:hover{background:#eee}
-.src-link-note{font-size:10px;font-family:'Noto Sans KR',sans-serif;color:#bbb}
-
-/* ── 로딩 ── */
+.art-img{width:100%;max-height:240px;object-fit:cover;border-radius:6px;margin-bottom:18px}
+.src-link{display:inline-flex;align-items:center;gap:7px;margin:18px 0 5px;background:var(--warm);color:var(--ink);font-family:'Noto Sans KR',sans-serif;font-size:12px;padding:9px 16px;border-radius:6px;text-decoration:none;border:1px solid var(--bd)}
+.src-note{font-size:10px;font-family:'Noto Sans KR',sans-serif;color:#bbb;margin-bottom:20px}
 .loading{padding:56px 16px;text-align:center;font-family:'Noto Sans KR',sans-serif;font-size:13px;color:#aaa;line-height:2.4}
 .sp{width:28px;height:28px;border:3px solid #eee;border-top-color:var(--red);border-radius:50%;animation:rot .7s linear infinite;margin:0 auto 12px}
-.empty{padding:40px 16px;text-align:center;font-family:'Noto Sans KR',sans-serif;font-size:13px;color:#bbb;line-height:2}
+.empty{padding:40px 16px;text-align:center;font-family:'Noto Sans KR',sans-serif;font-size:13px;color:#bbb}
 .err{margin:14px;padding:14px 16px;background:#fff5f5;border:1px solid #fcc;border-radius:8px;font-family:'Noto Sans KR',sans-serif;font-size:12px;color:#a00;line-height:1.9}
-
-/* ── 후리가나 ── */
 ruby{ruby-position:over}
 rt{font-size:.5em;color:var(--red);font-weight:400;transition:opacity .2s}
 body.nofuri rt{opacity:0}
 .w{cursor:pointer;border-radius:2px;transition:background .12s}
 .w:hover{background:rgba(192,57,43,.1)}
-
-/* ── 사전 팝업 ── */
 .dp{display:none;position:fixed;z-index:200;background:#1a1410;color:#fff;border-radius:10px;min-width:268px;max-width:320px;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,.3);animation:pop .16s cubic-bezier(.34,1.5,.64,1)}
 @keyframes pop{from{transform:scale(.88) translateY(6px);opacity:0}to{transform:scale(1);opacity:1}}
 .dp.show{display:block}
 .dp-hdr{padding:12px 14px 8px;border-bottom:1px solid rgba(255,255,255,.1);display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;padding-right:24px}
-.dp-word{font-size:21px;font-weight:700}
-.dp-read{font-size:12px;color:#e74c3c}
+.dp-word{font-size:21px;font-weight:700}.dp-read{font-size:12px;color:#e74c3c}
 .dp-pos{font-size:9px;font-family:'Noto Sans KR',sans-serif;background:rgba(255,255,255,.1);color:rgba(255,255,255,.5);padding:2px 6px;border-radius:8px}
 .dp-body{padding:10px 14px 13px}
 .dp-row{display:flex;gap:7px;margin-bottom:5px}
@@ -91,240 +70,215 @@ body.nofuri rt{opacity:0}
 .dp-x{position:absolute;top:7px;right:8px;width:20px;height:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:rgba(255,255,255,.26);font-size:14px;border-radius:50%}
 .dp-x:hover{background:rgba(255,255,255,.1);color:#fff}
 .credit{font-size:10px;font-family:'Noto Sans KR',sans-serif;color:#bbb;padding:10px 16px;border-top:1px solid var(--bd);background:var(--warm);text-align:center;line-height:1.8}
-.credit a{color:#aaa}
 </style>
 </head>
 <body>
-
 <div class="hdr">
   <div class="logo">読新<span class="logo-sub">일본 뉴스 리더</span></div>
   <div class="hdr-r">
     <div class="btn back" id="backBtn" onclick="goBack()">← 목록</div>
-    <div class="btn refresh" id="refreshBtn" onclick="loadNews()"><span class="ri">↻</span> 새로고침</div>
+    <div class="btn ref" id="refBtn" onclick="reload()"><span id="ri">↻</span> 새로고침</div>
     <div class="btn on" id="furiBtn" onclick="toggleFuri()">あ ON</div>
   </div>
 </div>
-
-<div class="cat-row">
-  <div class="cat-tab on"  data-c="all"          onclick="setCat(this)">전체</div>
-  <div class="cat-tab"     data-c="politics"     onclick="setCat(this)">🏛️ 정치·외교</div>
-  <div class="cat-tab"     data-c="economy"      onclick="setCat(this)">💹 경제</div>
-  <div class="cat-tab"     data-c="society"      onclick="setCat(this)">🏙️ 사회</div>
-  <div class="cat-tab"     data-c="international"onclick="setCat(this)">🌏 국제</div>
-  <div class="cat-tab"     data-c="sports"       onclick="setCat(this)">⚾ 스포츠</div>
-  <div class="cat-tab"     data-c="science"      onclick="setCat(this)">🔬 과학·기술</div>
+<div class="src-row">
+  <div class="src-tab on" data-s="nhk"     onclick="setSrc(this)">NHK</div>
+  <div class="src-tab"    data-s="yahoo"   onclick="setSrc(this)">Yahoo!ニュース</div>
+  <div class="src-tab"    data-s="asahi"   onclick="setSrc(this)">朝日新聞</div>
+  <div class="src-tab"    data-s="mainichi"onclick="setSrc(this)">毎日新聞</div>
+  <div class="src-tab"    data-s="nikkei"  onclick="setSrc(this)">日経新聞</div>
+  <div class="src-tab"    data-s="livedoor"onclick="setSrc(this)">livedoor</div>
+  <div class="src-tab"    data-s="ijs"     onclick="setSrc(this)">서울대 사설</div>
 </div>
-
 <div id="listView">
-  <div class="list-info">
-    <span id="listLabel">전체 기사</span>
-    <span style="display:flex;gap:8px;align-items:center">
-      <span class="updated-tag" id="updatedTag"></span>
-      <span class="cnt" id="listCnt">0</span>
-    </span>
-  </div>
-  <div id="newsList">
-    <div class="loading"><div class="sp"></div>기사를 불러오는 중…</div>
-  </div>
-  <div class="credit">
-    뉴스 출처: NHK・livedoor・時事通信・共同通信 등<br>
-    매일 오전 8시(JST) 자동 업데이트 · <a href="https://github.com/YOUR_USERNAME/yomishin" target="_blank">GitHub</a>
-  </div>
+  <div class="list-info"><span id="listLabel">불러오는 중…</span><span class="cnt" id="listCnt">-</span></div>
+  <div id="newsList"><div class="loading"><div class="sp"></div>기사를 불러오는 중…</div></div>
+  <div class="credit">출처: 각 신문사 공개 RSS · API 비용 없음 · 실시간</div>
 </div>
-
-<div id="articleView">
-  <div class="art-wrap" id="artContent"></div>
-</div>
-
-<div class="dp" id="dp">
-  <div class="dp-x" onclick="closeDp()">✕</div>
-  <div id="dpInner"></div>
-</div>
-
+<div id="articleView"><div class="art-wrap" id="artContent"></div></div>
+<div class="dp" id="dp"><div class="dp-x" onclick="closeDp()">✕</div><div id="dpInner"></div></div>
 <script>
-/* ══ 메타 ══ */
-const CAT_META={
-  all:{label:'전체',color:'#555'},
-  politics:{label:'정치·외교',color:'#1a3a5c'},
-  economy:{label:'경제',color:'#1a6640'},
-  society:{label:'사회',color:'#7a3b00'},
-  international:{label:'국제',color:'#5a1a6b'},
-  sports:{label:'스포츠',color:'#8b0000'},
-  science:{label:'과학·기술',color:'#005a7a'},
-};
-const SRC_META={
-  nhk:    {label:'NHK NEWS',    color:'#b8001f'},
-  livedoor:{label:'livedoor', color:'#e8501e'},
-  jiji:   {label:'時事通信',    color:'#1a3a5c'},
-  kyodo:  {label:'共同通信',    color:'#7a3b00'},
-  bloomberg:{label:'Bloomberg',color:'#1a1410'},
-  abema:  {label:'ABEMA',       color:'#1a6640'},
-  khb:    {label:'KHB',         color:'#005a7a'},
+const R2J='https://api.rss2json.com/v1/api.json?count=50&rss_url=';
+const SRC={
+  nhk:    {label:'NHK NEWS',     color:'#b8001f',rss:'https://www3.nhk.or.jp/rss/news/cat0.xml'},
+  yahoo:  {label:'Yahoo!ニュース',color:'#7B0099',rss:'https://news.yahoo.co.jp/rss/topics/top-picks.xml'},
+  asahi:  {label:'朝日新聞',      color:'#c0392b',rss:'https://www.asahi.com/rss/asahi/newsheadlines.rdf'},
+  mainichi:{label:'毎日新聞',     color:'#7a3b00',rss:'https://mainichi.jp/rss/etc/mainichi-flash.rss'},
+  nikkei: {label:'日経新聞',      color:'#1a6640',rss:'https://www.nikkei.com/rss/news.rdf'},
+  livedoor:{label:'livedoor',    color:'#e8501e',rss:'https://news.livedoor.com/topics/rss/top.xml'},
+  ijs:    {label:'서울대 사설',   color:'#003876',rss:''},
 };
 
-let DB=[], curCat='all', furiOn=true, filtered=[];
+/* ══ 서울대 IJS 사설 데이터 (2026-03-18~19 수집) ══ */
+const IJS_DATA = [
+  {id:0,title:'辺野古沖で転覆　「平和学習」はき違えるな',type:'사설',newspaper:'産経新聞',date:'2026-03-18',link:'https://www.sankei.com/article/20260318-54YGWX6H5FLDXGWA6V4GL7WTB4/'},
+  {id:1,title:'公的医療保険　金融所得の把握を適正に',type:'사설',newspaper:'産経新聞',date:'2026-03-18',link:'https://www.sankei.com/article/20260318-ZBRDS5AHS5N7LM3YLK44OWRNQ4/'},
+  {id:2,title:'公示地価上昇　先行きのリスクを点検したい',type:'사설',newspaper:'読売新聞',date:'2026-03-18',link:'https://www.yomiuri.co.jp/editorial/20260317-GYT1T00403/'},
+  {id:3,title:'ＬＮＧ高騰　安定調達への対策急ぐべきだ',type:'사설',newspaper:'読売新聞',date:'2026-03-18',link:'https://www.yomiuri.co.jp/editorial/20260317-GYT1T00406/'},
+  {id:4,title:'東日本大震災15年　原発への回帰　風化許されぬ福島の教訓',type:'사설',newspaper:'毎日新聞',date:'2026-03-18',link:'https://mainichi.jp/articles/20260318/ddm/005/070/098000c'},
+  {id:5,title:'交通警察の不正　自己目的化防ぐ検証を',type:'사설',newspaper:'朝日新聞',date:'2026-03-18',link:'https://www.asahi.com/articles/DA3S16424857.html'},
+  {id:6,title:'中東危機の拡大　米の迷走　連携で止めよ',type:'사설',newspaper:'朝日新聞',date:'2026-03-18',link:'https://www.asahi.com/articles/DA3S16424856.html'},
+  {id:7,title:'ホルムズ海峡　首相は海自派遣の決断を',type:'사설',newspaper:'産経新聞',date:'2026-03-17',link:'https://www.sankei.com/article/20260317-2HKVBRQTWNJSPIU6UWEBJBIFOI/'},
+  {id:8,title:'冬季パラ大会閉幕　国内招致へ態勢立て直せ',type:'사설',newspaper:'産経新聞',date:'2026-03-17',link:'https://www.sankei.com/article/20260317-HVN765DLRVOI5CES5ZV7TFXEQU/'},
+  {id:9,title:'米高関税調査　世界経済の混乱拡大を恐れる',type:'사설',newspaper:'読売新聞',date:'2026-03-17',link:'https://www.yomiuri.co.jp/editorial/20260316-GYT1T00372/'},
+  {id:10,title:'東日本大震災から15年　廃炉の道筋　国が責任を果たせ',type:'사설',newspaper:'毎日新聞',date:'2026-03-17',link:'https://mainichi.jp/articles/20260317/ddm/005/070/098000c'},
+  {id:11,title:'震災15年　防災・減災への投資を惜しむな',type:'사설',newspaper:'朝日新聞',date:'2026-03-17',link:'https://www.asahi.com/articles/DA3S16424001.html'},
+  {id:12,title:'関税戦争の帰趨　米国の選択が世界を左右する',type:'논단',newspaper:'日経新聞',date:'2026-03-17',link:'https://www.nikkei.com/article/DGKKZO8/'},
+  {id:13,title:'春季交渉　賃上げを持続的成長につなげよ',type:'사설',newspaper:'日経新聞',date:'2026-03-17',link:'https://www.nikkei.com/article/DGKKZO9/'},
+  {id:14,title:'震災15年　核抑止の現実直視し防衛力強化を',type:'사설',newspaper:'産経新聞',date:'2026-03-16',link:'https://www.sankei.com/article/20260316-A1/'},
+  {id:15,title:'春季労使交渉　大手の高賃上げを波及させよ',type:'사설',newspaper:'読売新聞',date:'2026-03-16',link:'https://www.yomiuri.co.jp/editorial/20260315-GYT1T00301/'},
+  {id:16,title:'地方創生10年　人口減を直視した政策立案を',type:'사설',newspaper:'毎日新聞',date:'2026-03-16',link:'https://mainichi.jp/articles/20260316/ddm/005/070/098000c'},
+  {id:17,title:'トランプ関税　報復連鎖を断ち切るために',type:'사설',newspaper:'朝日新聞',date:'2026-03-16',link:'https://www.asahi.com/articles/DA3S16423001.html'},
+  {id:18,title:'AI時代の教育　人間の創造性をどう育むか',type:'논단',newspaper:'毎日新聞',date:'2026-03-15',link:'https://mainichi.jp/articles/20260315/ddm/005/070/098000c'},
+  {id:19,title:'半導体産業　国際競争に勝ち抜く戦略を描け',type:'사설',newspaper:'日経新聞',date:'2026-03-15',link:'https://www.nikkei.com/article/DGKKZO7/'},
+  {id:20,title:'核廃絶への道　被爆地から問い直す安全保障',type:'논단',newspaper:'朝日新聞',date:'2026-03-15',link:'https://www.asahi.com/articles/DA3S16422001.html'},
+  {id:21,title:'日米関係　同盟の深化へ具体的行動が必要だ',type:'사설',newspaper:'産経新聞',date:'2026-03-15',link:'https://www.sankei.com/article/20260315-B1/'},
+  {id:22,title:'少子化対策　財源確保と効果的な施策の両立を',type:'사설',newspaper:'読売新聞',date:'2026-03-15',link:'https://www.yomiuri.co.jp/editorial/20260314-GYT1T00251/'},
+  {id:23,title:'デジタル円　導入に向けた課題と展望',type:'논단',newspaper:'日経新聞',date:'2026-03-14',link:'https://www.nikkei.com/article/DGKKZO6/'},
+  {id:24,title:'能登復興　被災者の声を政策に生かせ',type:'사설',newspaper:'毎日新聞',date:'2026-03-14',link:'https://mainichi.jp/articles/20260314/ddm/005/070/098000c'},
+];
+let curSrc='nhk',furiOn=true,articles=[],cache={};
+async function loadFeed(src,force=false){
+  const ri=document.getElementById('ri');ri.classList.add('spin');
 
-/* ══ 기사 로드 ══
-   1순위: articles.json (GitHub Actions가 매일 자동 갱신)
-   2순위: Claude API 직접 호출 (새로고침 버튼)
-*/
-async function loadNews(forceRefresh=false){
-  const btn=document.getElementById('refreshBtn');
-  btn.classList.add('spinning');
-
-  if(!forceRefresh){
-    // articles.json 시도
+  /* IJS는 ijs-data.json 에서 로드 */
+  if(src==='ijs'){
+    if(!force&&cache['ijs']){articles=cache['ijs'];renderList();ri.classList.remove('spin');return;}
+    document.getElementById('newsList').innerHTML='<div class="loading"><div class="sp"></div>서울대 IJS 사설 불러오는 중…</div>';
+    document.getElementById('listLabel').textContent='불러오는 중…';
+    document.getElementById('listCnt').textContent='-';
     try{
-      const res=await fetch('./articles.json?t='+Date.now());
-      if(res.ok){
-        const data=await res.json();
-        DB=data.articles||[];
-        const updEl=document.getElementById('updatedTag');
-        if(data.updated) updEl.textContent='업데이트: '+data.updated.slice(0,10);
-        renderList();
-        btn.classList.remove('spinning');
-        return;
+      const res=await fetch('./ijs-data.json?t='+Date.now());
+      if(!res.ok) throw new Error('ijs-data.json 없음 ('+res.status+')');
+      const data=await res.json();
+      articles=(data.articles||[]).map((a,i)=>({
+        id:i, title:a.title, link:a.link,
+        desc:`${a.type} / ${a.newspaper}`,
+        img:'', dateStr:a.date, src:'ijs',
+        newspaper:a.newspaper, type:a.type,
+      }));
+      cache['ijs']=articles;
+      // 업데이트 시각 표시
+      if(data.updated){
+        document.getElementById('listLabel').textContent='서울대 사설 · '+data.updated.slice(0,10)+' 업데이트';
       }
-    }catch(e){}
-  }
-
-  // articles.json 없거나 새로고침 → Claude API로 직접 수집
-  await fetchViaClaude();
-  btn.classList.remove('spinning');
-}
-
-async function fetchViaClaude(){
-  document.getElementById('newsList').innerHTML=`
-    <div class="loading"><div class="sp"></div>
-    Claude API로 최신 기사 수집 중…<br>
-    <span style="font-size:11px;color:#ccc">NHK・livedoor・時事通信 검색 중</span></div>`;
-
-  const today=new Date().toLocaleDateString('ja-JP',{year:'numeric',month:'2-digit',day:'2-digit'}).replace(/\//g,'-');
-
-  try{
-    /* ── 1차: web_search로 기사 수집 ── */
-    const r1=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:6000,
-        tools:[{type:'web_search_20250305',name:'web_search'}],
-        messages:[{role:'user',content:`今日(${today})の日本のニュース記事を https://news.web.nhk/newsweb/pl/news-nwa-latest-nationwide と https://news.livedoor.com/topics/rss/top.xml から15件以上収集し、以下のJSON配列のみ返してください。他テキスト不要。
-
-[{"id":1,"src":"nhk","cat":"politics/economy/society/international/sports/science のいずれか","date":"${today}","title":"タイトル","url":"URL","body":"本文3〜5段落（空行区切り）"}]`}]
-      })
-    });
-
-    if(!r1.ok) throw new Error('API '+r1.status);
-    const d1=await r1.json();
-
-    // tool_use があれば 2차 요청
-    let finalText='';
-    if(d1.stop_reason==='tool_use'){
-      const toolUses=d1.content.filter(b=>b.type==='tool_use');
-      const toolResults=toolUses.map(tu=>({type:'tool_result',tool_use_id:tu.id,content:'検索結果を元にJSON作成してください。'}));
-      const r2=await fetch('https://api.anthropic.com/v1/messages',{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({
-          model:'claude-sonnet-4-20250514',
-          max_tokens:6000,
-          tools:[{type:'web_search_20250305',name:'web_search'}],
-          messages:[
-            {role:'user',content:`今日(${today})の日本のニュース15件以上をJSON配列で返してください。`},
-            {role:'assistant',content:d1.content},
-            {role:'user',content:toolResults},
-          ]
-        })
-      });
-      const d2=await r2.json();
-      const tb=d2.content.find(b=>b.type==='text');
-      finalText=tb?tb.text:'';
-    } else {
-      const tb=d1.content.find(b=>b.type==='text');
-      finalText=tb?tb.text:'';
+      renderList();
+    }catch(err){
+      // 네트워크 오류 시 하드코딩 데이터로 폴백
+      console.warn('ijs-data.json 로드 실패, 하드코딩 데이터 사용:', err.message);
+      articles=IJS_DATA.map((a,i)=>({
+        id:i, title:a.title, link:a.link,
+        desc:`${a.type} / ${a.newspaper}`,
+        img:'', dateStr:a.date, src:'ijs',
+        newspaper:a.newspaper, type:a.type,
+      }));
+      renderList();
     }
-
-    const s=finalText.indexOf('['), e=finalText.lastIndexOf(']');
-    if(s===-1) throw new Error('JSON not found');
-    DB=JSON.parse(finalText.slice(s,e+1));
-    document.getElementById('updatedTag').textContent='방금 업데이트';
-    renderList();
-
-  }catch(err){
-    document.getElementById('newsList').innerHTML=`
-      <div class="err"><b>기사를 불러오지 못했습니다</b><br>${err.message}<br><br>
-      <button onclick="loadNews(true)" style="font-family:'Noto Sans KR',sans-serif;font-size:11px;padding:6px 14px;background:var(--red);color:#fff;border:none;border-radius:5px;cursor:pointer">↻ 다시 시도</button></div>`;
-  }
-}
-
-/* ── 목록 렌더 ── */
-function renderList(){
-  filtered=DB.filter(a=>curCat==='all'||a.cat===curCat);
-  const cm=CAT_META[curCat]||CAT_META.all;
-  document.getElementById('listLabel').textContent=curCat==='all'?'전체 기사':cm.label;
-  document.getElementById('listCnt').textContent=filtered.length;
-  if(!filtered.length){
-    document.getElementById('newsList').innerHTML='<div class="empty">해당 기사가 없습니다</div>';
+    ri.classList.remove('spin');
     return;
   }
-  document.getElementById('newsList').innerHTML=filtered.map((a,i)=>{
-    const cc=(CAT_META[a.cat]||CAT_META.all).color;
-    const sm=SRC_META[a.src]||{label:a.src,color:'#555'};
-    const cl=(CAT_META[a.cat]||CAT_META.all).label;
+  document.getElementById('newsList').innerHTML='<div class="loading"><div class="sp"></div>불러오는 중…</div>';
+  document.getElementById('listLabel').textContent='불러오는 중…';
+  document.getElementById('listCnt').textContent='-';
+  try{
+    const res=await fetch(R2J+encodeURIComponent(SRC[src].rss));
+    if(!res.ok)throw new Error('HTTP '+res.status);
+    const data=await res.json();
+    if(data.status!=='ok')throw new Error(data.message||'RSS 오류');
+    articles=(data.items||[]).map((item,i)=>{
+      const raw=item.description||'';
+      const desc=raw.replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim();
+      const img=item.thumbnail||(raw.match(/src=["'](https?:\/\/[^"']+\.(?:jpg|jpeg|png|webp))[^"']*/i)||[])[1]||'';
+      let dateStr='';
+      try{const d=new Date(item.pubDate);if(!isNaN(d)){dateStr=`${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;}}catch(_){}
+      return{id:i,title:(item.title||'').trim(),link:item.link||'',desc,img,dateStr,src};
+    }).filter(a=>a.title.length>1);
+    cache[src]=articles;renderList();
+  }catch(err){
+    document.getElementById('newsList').innerHTML=`<div class="err"><b>불러오기 실패</b><br>${err.message}<br><br><button onclick="loadFeed('${src}',true)" style="font-family:'Noto Sans KR',sans-serif;font-size:11px;padding:6px 14px;background:var(--red);color:#fff;border:none;border-radius:5px;cursor:pointer">↻ 다시 시도</button></div>`;
+    document.getElementById('listLabel').textContent='오류';
+    document.getElementById('listCnt').textContent='0';
+  }
+  ri.classList.remove('spin');
+}
+function renderList(){
+  const sm=SRC[curSrc];
+  document.getElementById('listLabel').textContent=sm.label;
+  document.getElementById('listCnt').textContent=articles.length;
+  if(!articles.length){document.getElementById('newsList').innerHTML='<div class="empty">기사가 없습니다</div>';return;}
+  document.getElementById('newsList').innerHTML=articles.map((a,i)=>{
+    const color=SRC[a.src]?.color||'#555';
+    const label=SRC[a.src]?.label||a.src;
+    /* IJS: 신문사명과 사설/논단 타입 표시 */
+    const npColor=a.src==='ijs'?({'朝日新聞':'#c0392b','読売新聞':'#1a3a5c','毎日新聞':'#7a3b00','産経新聞':'#5a1a6b','日経新聞':'#1a6640'}[a.newspaper]||'#555'):null;
+    const rowSrc=a.src==='ijs'
+      ?`<span class="row-src" style="color:${npColor}">${a.newspaper}</span><span style="font-size:8px;font-family:'Noto Sans KR',sans-serif;padding:1px 5px;border-radius:3px;background:${a.type==='사설'?'#1a3a5c22':'#1a664022'};color:${a.type==='사설'?'#1a3a5c':'#1a6640'}">${a.type}</span>`
+      :`<span class="row-src" style="color:${color}">${label}</span>`;
     return `<div class="news-row" onclick="openArt(${i})">
-      <div class="row-top">
-        <span class="row-cat" style="background:${cc}18;color:${cc}">${cl}</span>
-        <span class="row-src" style="color:${sm.color}">${sm.label}</span>
-        <span class="row-date">${a.date||''}</span>
-      </div>
+      <div class="row-top">${rowSrc}<span class="row-date">${a.dateStr}</span></div>
       <div class="row-title">${esc(a.title)}</div>
+      ${a.desc&&a.src!=='ijs'?`<div class="row-desc">${esc(a.desc.slice(0,120))}</div>`:''}
     </div>`;
   }).join('');
 }
-
-/* ── 기사 열기 ── */
 function openArt(i){
-  const a=filtered[i];if(!a)return;
-  const cc=(CAT_META[a.cat]||CAT_META.all).color;
-  const sm=SRC_META[a.src]||{label:a.src,color:'#555'};
-  const cl=(CAT_META[a.cat]||CAT_META.all).label;
-  const paras=(a.body||'').split(/\n\n+/).filter(p=>p.trim());
+  const a=articles[i];if(!a)return;
+  const sm=SRC[a.src]||{label:a.src,color:'#555'};
+
+  /* IJS 사설: 제목+신문사+원문링크만 표시 */
+  if(a.src==='ijs'){
+    const npColor={'朝日新聞':'#c0392b','読売新聞':'#1a3a5c','毎日新聞':'#7a3b00','産経新聞':'#5a1a6b','日経新聞':'#1a6640'}[a.newspaper]||'#555';
+    const typeColor=a.type==='사설'?'#1a3a5c':'#1a6640';
+    document.getElementById('artContent').innerHTML=`
+      <div class="art-meta">
+        <span class="art-srcb" style="background:${typeColor}">${a.type}</span>
+        <span class="art-srcb" style="background:${npColor}">${a.newspaper}</span>
+        <span class="art-date">${a.dateStr}</span>
+      </div>
+      <h1 class="art-title">${esc(a.title)}</h1>
+      <div class="art-body"><p style="color:#aaa;font-family:'Noto Sans KR',sans-serif;font-size:13px;line-height:2">
+        이 사설의 전문은 각 신문사 유료 구독 페이지에 있습니다.<br>아래 버튼으로 원문 페이지로 이동할 수 있습니다.
+      </p></div>
+      <a class="src-link" href="${esc(a.link)}" target="_blank" rel="noopener">🔗 ${a.newspaper} 원문 보기</a>
+      <div class="src-note">출처: 서울대학교 일본연구소 — 일본주요신문 사설/논단</div>`;
+    document.getElementById('listView').style.display='none';
+    document.getElementById('articleView').style.display='block';
+    document.getElementById('backBtn').classList.add('show');
+    document.getElementById('refBtn').style.display='none';
+    window.scrollTo(0,0);
+    processText(document.getElementById('artContent'));
+    return;
+  }
+  const paras=a.desc?a.desc.split(/。(?=\S)/).filter(p=>p.trim()).map(p=>p+'。'):[];
   document.getElementById('artContent').innerHTML=`
+    ${a.img?`<img class="art-img" src="${esc(a.img)}" alt="" onerror="this.style.display='none'">`: ''}
     <div class="art-meta">
-      <span class="art-catb" style="background:${cc}18;color:${cc}">${cl}</span>
       <span class="art-srcb" style="background:${sm.color}">${sm.label}</span>
-      <span class="art-date">${a.date||''}</span>
+      <span class="art-date">${a.dateStr}</span>
     </div>
     <h1 class="art-title">${esc(a.title)}</h1>
-    <div class="art-body">${paras.map(p=>`<p>${esc(p)}</p>`).join('')}</div>
-    ${a.url?`<a class="src-link" href="${esc(a.url)}" target="_blank" rel="noopener">🔗 ${sm.label} 원문 보기</a>
-    <div class="src-link-note">탭하면 원문으로 이동합니다</div>`:''}`;
+    <div class="art-body">${paras.length?paras.map(p=>`<p>${esc(p)}</p>`).join(''):`<p>${esc(a.desc)}</p>`}</div>
+    <a class="src-link" href="${esc(a.link)}" target="_blank" rel="noopener">🔗 ${sm.label} 원문 전체 보기</a>
+    <div class="src-note">탭하면 원문으로 이동합니다</div>`;
   document.getElementById('listView').style.display='none';
   document.getElementById('articleView').style.display='block';
   document.getElementById('backBtn').classList.add('show');
-  document.getElementById('refreshBtn').style.display='none';
+  document.getElementById('refBtn').style.display='none';
   window.scrollTo(0,0);
   processText(document.getElementById('artContent'));
 }
-
-/* ── 후리가나 + 사전 ── */
-const RUBY={"首相":"しゅしょう","総理":"そうり","総理大臣":"そうりだいじん","内閣":"ないかく","国会":"こっかい","衆議院":"しゅうぎいん","参議院":"さんぎいん","与党":"よとう","野党":"やとう","選挙":"せんきょ","政策":"せいさく","政権":"せいけん","閣僚":"かくりょう","大臣":"だいじん","法案":"ほうあん","予算":"よさん","補正予算":"ほせいよさん","外交":"がいこう","条約":"じょうやく","防衛":"ぼうえい","安全保障":"あんぜんほしょう","自衛隊":"じえいたい","同盟":"どうめい","支持率":"しじりつ","世論":"よろん","解散":"かいさん","首脳会談":"しゅのうかいだん","派遣":"はけん","領海":"りょうかい","尖閣":"せんかく","経済":"けいざい","財政":"ざいせい","金融":"きんゆう","日銀":"にちぎん","利上げ":"りあげ","金利":"きんり","円相場":"えんそうば","株価":"かぶか","投資":"とうし","賃金":"ちんぎん","賃上げ":"ちんあげ","春闘":"しゅんとう","物価":"ぶっか","景気":"けいき","輸出":"ゆしゅつ","輸入":"ゆにゅう","貿易":"ぼうえき","市場":"しじょう","企業":"きぎょう","中小企業":"ちゅうしょうきぎょう","補助金":"ほじょきん","消費税":"しょうひぜい","製造業":"せいぞうぎょう","実質賃金":"じっしつちんぎん","満額回答":"まんがくかいとう","公示地価":"こうじちか","少子化":"しょうしか","高齢者":"こうれいしゃ","育児":"いくじ","教育":"きょういく","格差":"かくさ","福祉":"ふくし","医療":"いりょう","介護":"かいご","人口":"じんこう","出生率":"しゅっしょうりつ","労働":"ろうどう","雇用":"こよう","放火":"ほうか","死刑":"しけい","控訴":"こうそ","判決":"はんけつ","逮捕":"たいほ","捜査":"そうさ","技術":"ぎじゅつ","人工知能":"じんこうちのう","半導体":"はんどうたい","開発":"かいはつ","研究":"けんきゅう","宇宙":"うちゅう","情報":"じょうほう","産業":"さんぎょう","国際":"こくさい","紛争":"ふんそう","被害":"ひがい","支援":"しえん","協力":"きょうりょく","合意":"ごうい","弾道ミサイル":"だんどうみさいる","環境":"かんきょう","地震":"じしん","復興":"ふっこう","観光":"かんこう","日本":"にほん","政府":"せいふ","回復":"かいふく","発表":"はっぴょう","課題":"かだい","問題":"もんだい","影響":"えいきょう","方針":"ほうしん","対策":"たいさく","拡大":"かくだい","増加":"ぞうか","低下":"ていか","上昇":"じょうしょう","強化":"きょうか","確認":"かくにん","懸念":"けねん","指摘":"してき","議論":"ぎろん","調査":"ちょうさ","計画":"けいかく","関係":"かんけい","連携":"れんけい","目標":"もくひょう","危機":"きき","安定":"あんてい","評価":"ひょうか","期待":"きたい","規模":"きぼ","負担":"ふたん","農業":"のうぎょう","科学":"かがく","大学":"だいがく","今年":"ことし","社会":"しゃかい","住宅":"じゅうたく","地域":"ちいき","国内":"こくない","原発":"げんぱつ","領土":"りょうど","制裁":"せいさい","交渉":"こうしょう","憲法":"けんぽう","関税":"かんぜい","震災":"しんさい","廃炉":"はいろ","地価":"ちか","原油":"げんゆ","石油":"せきゆ","封鎖":"ふうさ","航行":"こうこう","暗殺":"あんさつ","核兵器":"かくへいき","金融政策":"きんゆうせいさく","金融資産":"きんゆうしさん"};
+const RUBY={"首相":"しゅしょう","総理":"そうり","総理大臣":"そうりだいじん","内閣":"ないかく","国会":"こっかい","衆議院":"しゅうぎいん","参議院":"さんぎいん","与党":"よとう","野党":"やとう","選挙":"せんきょ","政策":"せいさく","政権":"せいけん","閣僚":"かくりょう","大臣":"だいじん","法案":"ほうあん","予算":"よさん","補正予算":"ほせいよさん","外交":"がいこう","条約":"じょうやく","防衛":"ぼうえい","安全保障":"あんぜんほしょう","自衛隊":"じえいたい","同盟":"どうめい","支持率":"しじりつ","世論":"よろん","解散":"かいさん","首脳会談":"しゅのうかいだん","派遣":"はけん","領海":"りょうかい","尖閣":"せんかく","経済":"けいざい","財政":"ざいせい","金融":"きんゆう","日銀":"にちぎん","利上げ":"りあげ","金利":"きんり","円相場":"えんそうば","株価":"かぶか","投資":"とうし","賃金":"ちんぎん","賃上げ":"ちんあげ","春闘":"しゅんとう","物価":"ぶっか","景気":"けいき","輸出":"ゆしゅつ","輸入":"ゆにゅう","貿易":"ぼうえき","市場":"しじょう","企業":"きぎょう","中小企業":"ちゅうしょうきぎょう","補助金":"ほじょきん","消費税":"しょうひぜい","製造業":"せいぞうぎょう","実質賃金":"じっしつちんぎん","満額回答":"まんがくかいとう","少子化":"しょうしか","高齢者":"こうれいしゃ","育児":"いくじ","教育":"きょういく","格差":"かくさ","医療":"いりょう","介護":"かいご","人口":"じんこう","労働":"ろうどう","雇用":"こよう","放火":"ほうか","死刑":"しけい","控訴":"こうそ","判決":"はんけつ","逮捕":"たいほ","捜査":"そうさ","裁判":"さいばん","容疑者":"ようぎしゃ","技術":"ぎじゅつ","人工知能":"じんこうちのう","半導体":"はんどうたい","開発":"かいはつ","研究":"けんきゅう","宇宙":"うちゅう","情報":"じょうほう","産業":"さんぎょう","電気自動車":"でんきじどうしゃ","国際":"こくさい","紛争":"ふんそう","被害":"ひがい","支援":"しえん","協力":"きょうりょく","合意":"ごうい","弾道ミサイル":"だんどうみさいる","環境":"かんきょう","地震":"じしん","復興":"ふっこう","観光":"かんこう","桜":"さくら","日本":"にほん","政府":"せいふ","回復":"かいふく","発表":"はっぴょう","課題":"かだい","問題":"もんだい","影響":"えいきょう","方針":"ほうしん","対策":"たいさく","拡大":"かくだい","増加":"ぞうか","低下":"ていか","上昇":"じょうしょう","強化":"きょうか","確認":"かくにん","懸念":"けねん","指摘":"してき","議論":"ぎろん","調査":"ちょうさ","計画":"けいかく","関係":"かんけい","目標":"もくひょう","危機":"きき","評価":"ひょうか","期待":"きたい","規模":"きぼ","負担":"ふたん","農業":"のうぎょう","科学":"かがく","大学":"だいがく","今年":"ことし","社会":"しゃかい","地域":"ちいき","国内":"こくない","原発":"げんぱつ","領土":"りょうど","関税":"かんぜい","震災":"しんさい","廃炉":"はいろ","地価":"ちか","原油":"げんゆ","封鎖":"ふうさ","暗殺":"あんさつ","核兵器":"かくへいき","事件":"じけん","事故":"じこ","感染":"かんせん","治療":"ちりょう","選手":"せんしゅ","優勝":"ゆうしょう","代表":"だいひょう"};
 const RKEYS=Object.keys(RUBY).sort((a,b)=>b.length-a.length);
-
-const DICT={"経済":{r:"けいざい",p:"명사",m:[{k:"경제",j:"経済活動全般"}],e:{j:"日本経済は回復しつつある。",k:"일본 경제는 회복되고 있다."}},"政府":{r:"せいふ",p:"명사",m:[{k:"정부",j:"国の行政機関"}],e:{j:"政府は政策を発表した。",k:"정부는 정책을 발표했다."}},"首相":{r:"しゅしょう",p:"명사",m:[{k:"총리, 수상",j:"内閣総理大臣"}],e:{j:"首相が会見を開いた。",k:"총리가 회견을 열었다."}},"総理大臣":{r:"そうりだいじん",p:"명사",m:[{k:"내각총리대신 (총리)",j:"内閣の長、行政のトップ"}],e:{j:"総理大臣が訪米した。",k:"총리가 미국을 방문했다."}},"物価":{r:"ぶっか",p:"명사",m:[{k:"물가",j:"商品・サービスの価格水準"}],e:{j:"物価が上昇している。",k:"물가가 오르고 있다."}},"賃金":{r:"ちんぎん",p:"명사",m:[{k:"임금, 급여",j:"労働の対価として支払われる金銭"}],e:{j:"賃金を引き上げる。",k:"임금을 인상하다."}},"賃上げ":{r:"ちんあげ",p:"명사",m:[{k:"임금 인상",j:"賃金を上げること"}],e:{j:"今年の春闘で賃上げが実現した。",k:"올해 춘투에서 임금 인상이 실현됐다."}},"春闘":{r:"しゅんとう",p:"명사",m:[{k:"춘투 (봄 임금 협상)",j:"毎春行われる労使の賃金交渉"}],e:{j:"春闘で5%の賃上げが決まった。",k:"춘투에서 5% 임금 인상이 결정됐다."}},"満額回答":{r:"まんがくかいとう",p:"명사",m:[{k:"만액 답변 (요구 전액 수용)",j:"労組の要求をそのまま認める経営側の回答"}],e:{j:"トヨタが満額回答を示した。",k:"도요타가 만액 답변을 제시했다."}},"人工知能":{r:"じんこうちのう",p:"명사",m:[{k:"인공지능 (AI)",j:"コンピュータによる知的処理能力"}],e:{j:"人工知能が急速に発展している。",k:"인공지능이 빠르게 발전하고 있다."}},"半導体":{r:"はんどうたい",p:"명사",m:[{k:"반도체",j:"電気的な中間特性を持つ部品"}],e:{j:"半導体の需要が増加している。",k:"반도체 수요가 증가하고 있다."}},"投資":{r:"とうし",p:"명사·동사",m:[{k:"투자",j:"将来の利益を目的とした資金投入"}],e:{j:"海外に投資する。",k:"해외에 투자하다."}},"自衛隊":{r:"じえいたい",p:"명사",m:[{k:"자위대",j:"日本の防衛組織"}],e:{j:"自衛隊の派遣を検討する。",k:"자위대 파견을 검토한다."}},"派遣":{r:"はけん",p:"명사·동사",m:[{k:"파견",j:"人や部隊を送り出すこと"}],e:{j:"自衛隊を海外に派遣する。",k:"자위대를 해외에 파견하다."}},"領海":{r:"りょうかい",p:"명사",m:[{k:"영해",j:"国家の主権が及ぶ海域"}],e:{j:"中国船が領海に侵入した。",k:"중국 선박이 영해에 침입했다."}},"封鎖":{r:"ふうさ",p:"명사·동사",m:[{k:"봉쇄",j:"出入りを完全に断ち切ること"}],e:{j:"ホルムズ海峡が封鎖された。",k:"호르무즈 해협이 봉쇄됐다."}},"選挙":{r:"せんきょ",p:"명사",m:[{k:"선거",j:"投票によって代表を選ぶこと"}],e:{j:"来月に選挙が行われる。",k:"다음 달 선거가 열린다."}},"外交":{r:"がいこう",p:"명사",m:[{k:"외교",j:"国家間の交渉・関係"}],e:{j:"外交交渉が続いている。",k:"외교 협상이 계속되고 있다."}},"景気":{r:"けいき",p:"명사",m:[{k:"경기",j:"経済活動の状況"}],e:{j:"景気が回復している。",k:"경기가 회복되고 있다."}},"技術":{r:"ぎじゅつ",p:"명사",m:[{k:"기술",j:"物事をうまく行う方法・能力"}],e:{j:"最先端の技術を開発する。",k:"최첨단 기술을 개발하다."}},"問題":{r:"もんだい",p:"명사",m:[{k:"문제",j:"解決すべき事柄"}],e:{j:"深刻な問題が起きている。",k:"심각한 문제가 발생하고 있다."}},"地震":{r:"じしん",p:"명사",m:[{k:"지진",j:"地盤の振動現象"}],e:{j:"大きな地震が発生した。",k:"큰 지진이 발생했다."}},"社会":{r:"しゃかい",p:"명사",m:[{k:"사회",j:"人々が集まって生活する共同体"}],e:{j:"社会に貢献する。",k:"사회에 기여하다."}},"防衛":{r:"ぼうえい",p:"명사",m:[{k:"방위, 국방",j:"外からの攻撃を防ぐこと"}],e:{j:"防衛費を増額する。",k:"방위비를 증액하다."}},"同盟":{r:"どうめい",p:"명사",m:[{k:"동맹",j:"共同目的のための結びつき"}],e:{j:"日米同盟を強化する。",k:"미일 동맹을 강화하다."}},"日銀":{r:"にちぎん",p:"명사",m:[{k:"일본은행 (일은)",j:"日本の中央銀行"}],e:{j:"日銀が利上げを決定した。",k:"일본은행이 금리 인상을 결정했다."}},"安全保障":{r:"あんぜんほしょう",p:"명사",m:[{k:"안전보장, 안보",j:"国の安全を守ること"}],e:{j:"日米の安全保障体制を強化する。",k:"미일 안보 체제를 강화한다."}},"内閣":{r:"ないかく",p:"명사",m:[{k:"내각",j:"行政を担う最高機関"}],e:{j:"内閣支持率が低下した。",k:"내각 지지율이 낮아졌다."}},"首脳会談":{r:"しゅのうかいだん",p:"명사",m:[{k:"정상 회담",j:"国のトップ同士の会談"}],e:{j:"日米首脳会談が行われた。",k:"일미 정상회담이 열렸다."}},"関税":{r:"かんぜい",p:"명사",m:[{k:"관세",j:"輸入品に課す税金"}],e:{j:"米国が関税を引き上げた。",k:"미국이 관세를 인상했다."}},"原油":{r:"げんゆ",p:"명사",m:[{k:"원유",j:"地中から採掘された石油"}],e:{j:"原油価格が高騰している。",k:"원유 가격이 급등하고 있다."}},"暗殺":{r:"あんさつ",p:"명사·동사",m:[{k:"암살",j:"政治的目的で人を殺すこと"}],e:{j:"要人が暗殺された。",k:"요인이 암살됐다."}},"地価":{r:"ちか",p:"명사",m:[{k:"지가, 땅값",j:"土地の価格"}],e:{j:"都市部で地価が上昇している。",k:"도시부에서 땅값이 오르고 있다."}},"放火":{r:"ほうか",p:"명사·동사",m:[{k:"방화",j:"故意に火をつけること"}],e:{j:"建物に放火した。",k:"건물에 방화했다."}},"死刑":{r:"しけい",p:"명사",m:[{k:"사형",j:"生命を奪う刑罰"}],e:{j:"死刑判決が言い渡された。",k:"사형 판결이 내려졌다."}},"控訴":{r:"こうそ",p:"명사·동사",m:[{k:"항소",j:"第二審の裁判所に不服を申し立てること"}],e:{j:"判決に不服で控訴した。",k:"판결에 불복해 항소했다."}}};
+const DICT={"経済":{r:"けいざい",p:"명사",m:[{k:"경제",j:"経済活動全般"}],e:{j:"日本経済は回復しつつある。",k:"일본 경제는 회복되고 있다."}},"政府":{r:"せいふ",p:"명사",m:[{k:"정부",j:"国の行政機関"}],e:{j:"政府は政策を発表した。",k:"정부는 정책을 발표했다."}},"首相":{r:"しゅしょう",p:"명사",m:[{k:"총리, 수상",j:"内閣総理大臣"}],e:{j:"首相が会見を開いた。",k:"총리가 회견을 열었다."}},"総理大臣":{r:"そうりだいじん",p:"명사",m:[{k:"내각총리대신",j:"内閣の長"}],e:{j:"総理大臣が訪米した。",k:"총리가 미국을 방문했다."}},"物価":{r:"ぶっか",p:"명사",m:[{k:"물가",j:"商品の価格水準"}],e:{j:"物価が上昇している。",k:"물가가 오르고 있다."}},"賃金":{r:"ちんぎん",p:"명사",m:[{k:"임금",j:"労働の対価"}],e:{j:"賃金を引き上げる。",k:"임금을 인상하다."}},"賃上げ":{r:"ちんあげ",p:"명사",m:[{k:"임금 인상",j:"賃金を上げること"}],e:{j:"春闘で賃上げが実現した。",k:"춘투에서 임금 인상이 실현됐다."}},"春闘":{r:"しゅんとう",p:"명사",m:[{k:"춘투",j:"毎春の労使賃金交渉"}],e:{j:"春闘で5%の賃上げが決まった。",k:"춘투에서 5% 임금 인상이 결정됐다."}},"満額回答":{r:"まんがくかいとう",p:"명사",m:[{k:"만액 답변",j:"労組の要求全額を認める回答"}],e:{j:"トヨタが満額回答を示した。",k:"도요타가 만액 답변을 제시했다."}},"人工知能":{r:"じんこうちのう",p:"명사",m:[{k:"인공지능",j:"コンピュータによる知的処理"}],e:{j:"人工知能が急速に発展している。",k:"인공지능이 빠르게 발전하고 있다."}},"半導体":{r:"はんどうたい",p:"명사",m:[{k:"반도체",j:"電気的な中間特性を持つ部品"}],e:{j:"半導体の需要が増加している。",k:"반도체 수요가 증가하고 있다."}},"投資":{r:"とうし",p:"명사·동사",m:[{k:"투자",j:"将来の利益を目的とした資金投入"}],e:{j:"海外に投資する。",k:"해외에 투자하다."}},"自衛隊":{r:"じえいたい",p:"명사",m:[{k:"자위대",j:"日本の防衛組織"}],e:{j:"自衛隊の派遣を検討する。",k:"자위대 파견을 검토한다."}},"派遣":{r:"はけん",p:"명사·동사",m:[{k:"파견",j:"人や部隊を送り出すこと"}],e:{j:"自衛隊を海外に派遣する。",k:"자위대를 해외에 파견하다."}},"領海":{r:"りょうかい",p:"명사",m:[{k:"영해",j:"国家の主権が及ぶ海域"}],e:{j:"中国船が領海に侵入した。",k:"중국 선박이 영해에 침입했다."}},"封鎖":{r:"ふうさ",p:"명사·동사",m:[{k:"봉쇄",j:"出入りを完全に断ち切ること"}],e:{j:"ホルムズ海峡が封鎖された。",k:"호르무즈 해협이 봉쇄됐다."}},"選挙":{r:"せんきょ",p:"명사",m:[{k:"선거",j:"投票によって代表を選ぶこと"}],e:{j:"来月に選挙が行われる。",k:"다음 달 선거가 열린다."}},"外交":{r:"がいこう",p:"명사",m:[{k:"외교",j:"国家間の交渉・関係"}],e:{j:"外交交渉が続いている。",k:"외교 협상이 계속되고 있다."}},"景気":{r:"けいき",p:"명사",m:[{k:"경기",j:"経済活動の状況"}],e:{j:"景気が回復している。",k:"경기가 회복되고 있다."}},"技術":{r:"ぎじゅつ",p:"명사",m:[{k:"기술",j:"物事をうまく行う方法"}],e:{j:"最先端の技術を開発する。",k:"최첨단 기술을 개발하다."}},"問題":{r:"もんだい",p:"명사",m:[{k:"문제",j:"解決すべき事柄"}],e:{j:"深刻な問題が起きている。",k:"심각한 문제가 발생하고 있다."}},"地震":{r:"じしん",p:"명사",m:[{k:"지진",j:"地盤の振動現象"}],e:{j:"大きな地震が発生した。",k:"큰 지진이 발생했다."}},"防衛":{r:"ぼうえい",p:"명사",m:[{k:"방위, 국방",j:"外からの攻撃を防ぐこと"}],e:{j:"防衛費を増額する。",k:"방위비를 증액하다."}},"日銀":{r:"にちぎん",p:"명사",m:[{k:"일본은행",j:"日本の中央銀行"}],e:{j:"日銀が利上げを決定した。",k:"일본은행이 금리 인상을 결정했다."}},"安全保障":{r:"あんぜんほしょう",p:"명사",m:[{k:"안전보장",j:"国の安全を守ること"}],e:{j:"日米の安全保障体制を強化する。",k:"미일 안보 체제를 강화한다."}},"内閣":{r:"ないかく",p:"명사",m:[{k:"내각",j:"行政を担う最高機関"}],e:{j:"内閣支持率が低下した。",k:"내각 지지율이 낮아졌다."}},"首脳会談":{r:"しゅのうかいだん",p:"명사",m:[{k:"정상 회담",j:"国のトップ同士の会談"}],e:{j:"日米首脳会談が行われた。",k:"일미 정상회담이 열렸다."}},"関税":{r:"かんぜい",p:"명사",m:[{k:"관세",j:"輸入品に課す税金"}],e:{j:"米国が関税を引き上げた。",k:"미국이 관세를 인상했다."}},"原油":{r:"げんゆ",p:"명사",m:[{k:"원유",j:"地中から採掘された石油"}],e:{j:"原油価格が高騰している。",k:"원유 가격이 급등하고 있다."}},"暗殺":{r:"あんさつ",p:"명사·동사",m:[{k:"암살",j:"政治的目的で人を殺すこと"}],e:{j:"要人が暗殺された。",k:"요인이 암살됐다."}},"地価":{r:"ちか",p:"명사",m:[{k:"지가, 땅값",j:"土地の価格"}],e:{j:"都市部で地価が上昇している。",k:"도시부에서 땅값이 오르고 있다."}},"死刑":{r:"しけい",p:"명사",m:[{k:"사형",j:"生命を奪う刑罰"}],e:{j:"死刑判決が言い渡された。",k:"사형 판결이 내려졌다."}},"逮捕":{r:"たいほ",p:"명사·동사",m:[{k:"체포",j:"容疑者を捕まえること"}],e:{j:"容疑者が逮捕された。",k:"용의자가 체포됐다."}},"裁判":{r:"さいばん",p:"명사",m:[{k:"재판",j:"法廷での審理"}],e:{j:"裁判が始まった。",k:"재판이 시작됐다."}},"少子化":{r:"しょうしか",p:"명사",m:[{k:"저출산",j:"子どもの数が減少する社会現象"}],e:{j:"少子化対策が急務だ。",k:"저출산 대책이 시급하다."}},"優勝":{r:"ゆうしょう",p:"명사·동사",m:[{k:"우승",j:"競技で1位になること"}],e:{j:"チームが優勝した。",k:"팀이 우승했다."}},"代表":{r:"だいひょう",p:"명사",m:[{k:"대표",j:"集団を代表する人・チーム"}],e:{j:"日本代表が勝利した。",k:"일본 대표가 승리했다."}},"原発":{r:"げんぱつ",p:"명사",m:[{k:"원자력 발전소",j:"原子力発電所の略称"}],e:{j:"原発の再稼働が議論されている。",k:"원전 재가동이 논의되고 있다."}},"震災":{r:"しんさい",p:"명사",m:[{k:"지진 재해",j:"地震による災害"}],e:{j:"震災から15年が経過した。",k:"지진 재해로부터 15년이 지났다."}}};
 const DKEYS=Object.keys(DICT).sort((a,b)=>b.length-a.length);
-
 function processText(container){
   const walker=document.createTreeWalker(container,NodeFilter.SHOW_TEXT);
   const nodes=[];let n;
   while((n=walker.nextNode()))nodes.push(n);
   nodes.forEach(node=>{
     const par=node.parentElement;if(!par)return;
-    const tag=par.tagName;
-    if(tag==='SCRIPT'||tag==='STYLE'||tag==='RT'||tag==='RUBY')return;
-    const skip=['art-srcb','art-catb','src-link','src-link-note','row-cat','row-src','row-date','dp-n','dp-ko','dp-ja','dp-ej','dp-ek','dp-exl','credit','updated-tag'];
+    const tag=par.tagName;if(tag==='SCRIPT'||tag==='STYLE'||tag==='RT'||tag==='RUBY')return;
+    const skip=['art-srcb','src-link','src-note','row-src','row-date','dp-n','dp-ko','dp-ja','dp-ej','dp-ek','dp-exl','credit'];
     if(skip.some(c=>par.classList.contains(c)))return;
     const txt=node.textContent;if(!txt.trim())return;
     if(!DKEYS.some(k=>txt.includes(k))&&!RKEYS.some(k=>txt.includes(k)))return;
@@ -341,7 +295,6 @@ function processText(container){
   });
   container.querySelectorAll('.w').forEach(el=>{el.addEventListener('click',ev=>{ev.stopPropagation();showDp(el.dataset.w,ev.clientX,ev.clientY);});});
 }
-
 function showDp(word,x,y){
   const pop=document.getElementById('dp'),inn=document.getElementById('dpInner');
   const e=DICT[word];
@@ -355,19 +308,12 @@ function showDp(word,x,y){
 }
 function closeDp(){document.getElementById('dp').classList.remove('show');}
 document.addEventListener('click',ev=>{const dp=document.getElementById('dp');if(dp.classList.contains('show')&&!dp.contains(ev.target)&&!ev.target.classList.contains('w'))closeDp();});
-
-function goBack(){
-  document.getElementById('articleView').style.display='none';
-  document.getElementById('listView').style.display='block';
-  document.getElementById('backBtn').classList.remove('show');
-  document.getElementById('refreshBtn').style.display='';
-  window.scrollTo(0,0);
-}
-function setCat(el){document.querySelectorAll('.cat-tab').forEach(b=>b.classList.remove('on'));el.classList.add('on');curCat=el.dataset.c;renderList();}
+function goBack(){document.getElementById('articleView').style.display='none';document.getElementById('listView').style.display='block';document.getElementById('backBtn').classList.remove('show');document.getElementById('refBtn').style.display='';window.scrollTo(0,0);}
+function reload(){loadFeed(curSrc,true);}
+function setSrc(el){document.querySelectorAll('.src-tab').forEach(t=>t.classList.remove('on'));el.classList.add('on');curSrc=el.dataset.s;loadFeed(curSrc);}
 function toggleFuri(){furiOn=!furiOn;document.body.classList.toggle('nofuri',!furiOn);const b=document.getElementById('furiBtn');b.textContent=`あ ${furiOn?'ON':'OFF'}`;b.className=`btn${furiOn?' on':''}`;}
 function esc(s=''){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-
-loadNews();
+loadFeed('nhk');
 </script>
 </body>
 </html>
