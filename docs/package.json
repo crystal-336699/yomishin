@@ -1,0 +1,1 @@
+{"name":"yomishin","version":"1.0.0","scripts":{"fetch":"node scripts/fetch-news.js"},"engines":{"node":">=18"}}
